@@ -1,0 +1,75 @@
+// js/product.js
+class ProductDetail {
+    constructor() {
+        this.currentVariant = null;
+        this.productData = null;
+        this.init();
+    }
+
+    init() {
+        this.loadProductData();
+        this.setupEventListeners();
+    }
+
+    loadProductData() {
+        // Load product data from URL parameters or API
+        const productId = this.getProductIdFromURL();
+        this.fetchProductData(productId);
+    }
+
+    setupEventListeners() {
+        // Color selection
+        document.querySelectorAll('.color-swatch').forEach(swatch => {
+            swatch.addEventListener('click', (e) => this.onColorSelect(e));
+        });
+
+        // Storage selection  
+        document.querySelectorAll('.storage-option').forEach(option => {
+            option.addEventListener('click', (e) => this.onStorageSelect(e));
+        });
+
+        // Quantity changes
+        document.querySelector('.qty-minus').addEventListener('click', () => this.adjustQuantity(-1));
+        document.querySelector('.qty-plus').addEventListener('click', () => this.adjustQuantity(1));
+    }
+
+    onColorSelect(event) {
+        const selectedColor = event.target.dataset.color;
+        this.updateVariantSelection('color', selectedColor);
+        this.showPriceUpdateToast();
+    }
+
+    onStorageSelect(event) {
+        const selectedStorage = event.target.dataset.storage;
+        this.updateVariantSelection('storage', selectedStorage);
+        this.showPriceUpdateToast();
+    }
+
+    updateVariantSelection(type, value) {
+        // Find matching variant and update price/image
+        const variant = this.findMatchingVariant();
+        if (variant) {
+            this.updatePrice(variant.price);
+            this.updateProductImage(variant.image);
+            this.currentVariant = variant;
+        }
+    }
+
+    updatePrice(newPrice) {
+        const priceElement = document.querySelector('.current-price');
+        priceElement.textContent = `₹${newPrice.toLocaleString()}`;
+        
+        // Add smooth transition effect
+        priceElement.classList.add('price-update');
+        setTimeout(() => priceElement.classList.remove('price-update'), 500);
+    }
+
+    showPriceUpdateToast() {
+        const toast = document.createElement('div');
+        toast.className = 'price-toast';
+        toast.textContent = 'Price updated';
+        document.body.appendChild(toast);
+        
+        setTimeout(() => toast.remove(), 2000);
+    }
+}
