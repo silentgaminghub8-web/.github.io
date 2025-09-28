@@ -1,0 +1,49 @@
+{
+  "user": {
+    "name": "Rose",
+    "id": "user_rose_01",
+    "default_address": "Delhi, Chandni Chowk, Gali No.5",
+    "saved_cards": [
+      {
+        "id": "card_001",
+        "alias": "Rose •••• 4242",
+        "type": "visa",
+        "expiry": "12/2026"
+      }
+    ]
+  },
+  "products": [
+    {
+      "id": "prod_001",
+      "title": "Samsung Galaxy S24 - Great India Edition",
+      "category": "Mobiles",
+      "basePrice": 24999,
+      "variants": [
+        {
+          "sku": "s24_64_black",
+          "storage": "64GB",
+          "color": "Black",
+          "price": 19999,
+          "image": "s24-black.jpg",
+          "stock": 15
+        },
+        {
+          "sku": "s24_128_black", 
+          "storage": "128GB",
+          "color": "Black",
+          "price": 22999,
+          "image": "s24-black.jpg",
+          "stock": 10
+        }
+      ],
+      "rating": 4.4,
+      "reviews_count": 1234,
+      "specs": {
+        "display": "6.1 inch AMOLED",
+        "processor": "Snapdragon 8 Gen 3",
+        "camera": "50MP + 12MP + 10MP",
+        "battery": "4000mAh"
+      }
+    }
+  ]
+}
