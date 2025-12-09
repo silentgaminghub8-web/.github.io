@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f2f5;
+            margin: 0;
+        }
+        .login-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        .login-container h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #666;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; 
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #error-msg {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+        /* Loader */
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 5px;
+            display: none;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <h2>Login</h2>
+    <div class="input-group">
+        <label for="uid">User ID</label>
+        <input type="text" id="uid" placeholder="Enter ID">
+    </div>
+    <div class="input-group">
+        <label for="upass">Password</label>
+        <input type="password" id="upass" placeholder="Enter Password">
+    </div>
+    <button id="submit-btn">
+        <div class="loader" id="btn-loader"></div>
+        <span id="btn-text">Log In</span>
+    </button>
+    <p id="error-msg"></p>
+</div>
+
+<script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx8uWAaTPIKWAIcMXTFvfk44igzPRqzGdjBvOVuL5mxaT1r_sj8-ApXzJSF6_6mzxVtzg/exec";
+
+    document.getElementById('submit-btn').addEventListener('click', () => {
+        const id = document.getElementById('uid').value;
+        const pass = document.getElementById('upass').value;
+        const errorMsg = document.getElementById('error-msg');
+        const btnText = document.getElementById('btn-text');
+        const loader = document.getElementById('btn-loader');
+        const btn = document.getElementById('submit-btn');
+
+        if (!id || !pass) {
+            errorMsg.textContent = "Please fill all fields.";
+            errorMsg.style.display = "block";
+            return;
+        }
+
+        // Loading State
+        errorMsg.style.display = "none";
+        btnText.textContent = "Verifying...";
+        loader.style.display = "inline-block";
+        btn.disabled = true;
+
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify({ id: id, password: pass }),
+            mode: 'cors' // Important to handle response
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Yahan जादू hota hai: Pura page replace kar diya jayega hidden code se
+                document.open();
+                document.write(data.html);
+                document.close();
+            } else {
+                // Error handling
+                errorMsg.textContent = data.message || "Invalid ID or Password";
+                errorMsg.style.display = "block";
+                
+                // Reset Button
+                btnText.textContent = "Log In";
+                loader.style.display = "none";
+                btn.disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            errorMsg.textContent = "Connection Error. Please try again.";
+            errorMsg.style.display = "block";
+            
+            // Reset Button
+            btnText.textContent = "Log In";
+            loader.style.display = "none";
+            btn.disabled = false;
+        });
+    });
+</script>
+
+</body>
+</html>
