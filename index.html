@@ -56,6 +56,14 @@
         button:hover {
             background-color: #0056b3;
         }
+        /* Style for the new Reset Button */
+        #reset-btn {
+            background-color: #6c757d;
+            margin-top: 10px;
+        }
+        #reset-btn:hover {
+            background-color: #5a6268;
+        }
         #error-msg {
             color: red;
             font-size: 14px;
@@ -94,11 +102,36 @@
         <div class="loader" id="btn-loader"></div>
         <span id="btn-text">Log In</span>
     </button>
+    <!-- Added Reset Button -->
+    <button id="reset-btn">Clear Saved Info</button>
     <p id="error-msg"></p>
 </div>
 
 <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx8uWAaTPIKWAIcMXTFvfk44igzPRqzGdjBvOVuL5mxaT1r_sj8-ApXzJSF6_6mzxVtzg/exec";
+
+    // 1. On Page Load: Check storage and fill inputs
+    window.addEventListener('load', () => {
+        const savedId = localStorage.getItem('myApp_uid');
+        const savedPass = localStorage.getItem('myApp_pass');
+        
+        if (savedId) {
+            document.getElementById('uid').value = savedId;
+        }
+        if (savedPass) {
+            document.getElementById('upass').value = savedPass;
+        }
+    });
+
+    // 2. Reset Button Logic
+    document.getElementById('reset-btn').addEventListener('click', () => {
+        localStorage.removeItem('myApp_uid');
+        localStorage.removeItem('myApp_pass');
+        document.getElementById('uid').value = "";
+        document.getElementById('upass').value = "";
+        // Optional: Hide error message if clearing
+        document.getElementById('error-msg').style.display = "none";
+    });
 
     document.getElementById('submit-btn').addEventListener('click', () => {
         const id = document.getElementById('uid').value;
@@ -113,6 +146,10 @@
             errorMsg.style.display = "block";
             return;
         }
+
+        // 3. Save to Storage before processing
+        localStorage.setItem('myApp_uid', id);
+        localStorage.setItem('myApp_pass', pass);
 
         // Loading State
         errorMsg.style.display = "none";
